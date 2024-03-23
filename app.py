@@ -5,8 +5,8 @@ from tensorflow.keras.applications.vgg16 import VGG16
 from sklearn.preprocessing import LabelEncoder
 from PIL import Image
 from io import BytesIO
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -46,7 +46,10 @@ def extract_features(img_url):
 def predict():
     try:
         # Get the image URL from the request
-        img_url = request.json['image_url']
+        img_url = request.json.get('image_url')
+
+        if not img_url:
+            return jsonify({'error': 'Image URL is missing or invalid'}), 400
 
         # Extract features from the image
         test_features = extract_features(img_url)
