@@ -6,6 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from PIL import Image
 from io import BytesIO
 import tensorflow as tf
+import numpy as np
 
 app = Flask(__name__)
 
