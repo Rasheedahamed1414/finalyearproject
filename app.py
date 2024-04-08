@@ -39,7 +39,8 @@ def extract_features(img_url):
         features = vgg_model.predict(img_data)
         return features.flatten()
     except Exception as e:
-        print("Error processing image:", e)
+        error_message = "Error processing image: {}".format(e)
+        print(error_message)
         return None
 
 @app.route('/predict', methods=['POST'])
@@ -75,7 +76,9 @@ def predict():
             response = {'error': 'Error processing image'}
 
     except Exception as e:
-        response = {'error': str(e)}
+        error_message = "Error during prediction: {}".format(e)
+        print(error_message)
+        response = {'error': 'An error occurred during prediction'}
 
     return jsonify(response)
 
