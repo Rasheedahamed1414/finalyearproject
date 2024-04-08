@@ -7,6 +7,7 @@ from PIL import Image
 from io import BytesIO
 import numpy as np
 import tensorflow as tf
+import time
 
 app = Flask(__name__)
 
@@ -45,6 +46,7 @@ def extract_features(img_url):
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    start_time = time.time()
     try:
         # Get the image URL from the request
         img_url = request.json.get('image_url')
@@ -76,11 +78,17 @@ def predict():
             response = {'error': 'Error processing image'}
 
     except Exception as e:
-        error_message = "Error during prediction: {}".format(e)
+        error_message = "An error occurred during prediction: {}".format(e)
         print(error_message)
-        response = {'error': 'An error occurred during prediction'}
+        response = {'error': error_message}
 
-    return jsonify(response)
+    end_time = time.time()
+    response_time_ms = (end_time - start_time) * 1000
+
+    if response_time_ms > 200:
+        print("Response time exceeded threshold: {} ms".format(response_time_ms))
+
+    return jsonify(response), 200, {'Content-Type': 'application/json'}
 
 if __name__ == '__main__':
     app.run(debug=True)
